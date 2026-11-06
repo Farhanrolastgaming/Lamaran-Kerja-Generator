@@ -1328,7 +1328,7 @@
       const originalTitle = document.title;
       document.title = `Surat_Lamaran_${cleanNama}_${cleanPosisi}`;
 
-      this.showToast('Membuka dialog cetak / Simpan sebagai PDF...', 'info');
+      this.showToast('Membuka dialog cetak... Tips: Pastikan opsi "Header dan footer" tidak dicentang.', 'info');
 
       setTimeout(() => {
         window.print();
