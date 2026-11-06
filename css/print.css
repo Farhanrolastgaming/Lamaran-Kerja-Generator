@@ -1,0 +1,193 @@
+/**
+ * print.css - Aturan cetak presisi A4 untuk menghasilkan PDF resmi
+ * Mengatur margin 2,5 cm, font Times New Roman 12pt, dan menyembunyikan semua elemen UI website.
+ */
+
+@page {
+  size: A4 portrait;
+  margin: 25mm 25mm 20mm 25mm; /* Standar formal 2.5cm */
+}
+
+@media print {
+  /* Sembunyikan semua elemen antarmuka website */
+  header,
+  footer,
+  nav,
+  .hero-section,
+  .form-column,
+  .preview-toolbar,
+  .preview-actions,
+  .btn,
+  .modal-overlay,
+  .toast-container,
+  .manual-edit-alert,
+  .mobile-tabs,
+  .quick-floating-bar,
+  .guide-modal,
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset layout body untuk kertas fisik A4 */
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: "Times New Roman", Times, serif !important;
+    font-size: 12pt !important;
+    line-height: 1.35 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .workspace-wrapper,
+  .workspace-grid,
+  .workspace-grid.show-form-only .preview-column,
+  .workspace-grid.show-preview-only .preview-column,
+  .preview-column,
+  .preview-sheet-outer,
+  #live-letter-mount {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Konten surat formal A4 */
+  .letter-sheet {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-family: "Times New Roman", Times, serif !important;
+    font-size: 12pt !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .letter-header-date {
+    text-align: right !important;
+    margin-bottom: 14pt !important;
+    font-size: 12pt !important;
+  }
+
+  .letter-meta-block {
+    margin-bottom: 12pt !important;
+  }
+
+  .meta-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .meta-table td {
+    padding: 1pt 0 !important;
+    font-size: 12pt !important;
+    vertical-align: top !important;
+  }
+
+  .meta-label {
+    width: 90pt !important;
+  }
+
+  .meta-sep {
+    width: 16pt !important;
+    text-align: center !important;
+  }
+
+  .letter-recipient-block {
+    margin-bottom: 14pt !important;
+    line-height: 1.3 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .letter-salutation {
+    margin-bottom: 8pt !important;
+  }
+
+  .letter-paragraph {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    margin-bottom: 8pt !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Tabel Identitas Diri 2 Kolom */
+  .letter-identity-wrap {
+    margin: 4pt 0 10pt 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .identity-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-left: 10pt !important;
+  }
+
+  .identity-table td {
+    padding: 2pt 4pt 2pt 0 !important;
+    font-size: 12pt !important;
+    vertical-align: top !important;
+  }
+
+  .col-label {
+    width: 160pt !important;
+    white-space: nowrap !important;
+  }
+
+  .col-sep {
+    width: 16pt !important;
+    text-align: center !important;
+  }
+
+  .col-value {
+    word-break: break-word !important;
+  }
+
+  /* Daftar Lampiran */
+  .letter-attachment-list {
+    margin: 4pt 0 10pt 18pt !important;
+    padding: 0 !important;
+  }
+
+  .letter-attachment-list li {
+    margin-bottom: 2pt !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Blok Tanda Tangan: Jaga agar tidak terpisah sendirian ke halaman berikutnya */
+  .letter-signature-wrapper {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 14pt !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .letter-signature-block {
+    width: 200pt !important;
+    text-align: left !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .signature-closing {
+    margin-bottom: 45pt !important; /* Ruang tanda tangan basah */
+  }
+
+  .signature-name {
+    font-weight: bold !important;
+    text-decoration: underline !important;
+  }
+}

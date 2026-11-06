@@ -1,0 +1,18 @@
+{
+  "name": "surat-lamaran-generator",
+  "version": "1.0.0",
+  "description": "Website Generator Surat Lamaran Kerja Profesional (All Job)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "surat-lamaran-kerja",
+    "job-application-generator",
+    "docx",
+    "pdf"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
+

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuratLamaran Generator – Buat Surat Lamaran Kerja Profesional (All Job)</title>
+  <meta name="description" content="Aplikasi generator surat lamaran kerja resmi Bahasa Indonesia untuk semua jenis posisi pekerjaan. Dilengkapi live preview A4, privasi lokal 100%, serta ekspor dokumen resmi PDF dan Microsoft Word (.docx).">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="brand-wrapper">
+        <div class="brand-logo-icon">
+          <i data-lucide="file-text"></i>
+        </div>
+        <div>
+          <span class="brand-title">SuratLamaran</span>
+          <span class="brand-badge">All Job</span>
+        </div>
+      </a>
+
+      <nav class="header-nav">
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-open-sample-modal" title="Muat contoh data untuk uji coba cepat">
+          <i data-lucide="sparkles"></i>
+          <span>Contoh Data</span>
+        </button>
+        <button type="button" class="btn btn-danger-ghost btn-sm" id="btn-open-reset-modal" title="Hapus draft dan mulai baru">
+          <i data-lucide="trash-2"></i>
+          <span>Reset Form</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-pill">
+        <i data-lucide="shield-check"></i>
+        <span>Standar Formal EYD / PUEBI • 100% Client-Side Privacy (Data Tersimpan Aman di Browser)</span>
+      </div>
+      <h1 class="hero-title">Buat Surat Lamaran Kerja Profesional</h1>
+      <p class="hero-subtitle">
+        Susun surat lamaran formal secara instan, rapi, dan siap kirim untuk segala jenis profesi. 
+        Mendukung pratinjau langsung berstandar A4 serta ekspor dokumen native PDF dan Microsoft Word (.docx).
+      </p>
+
+      <div class="hero-actions">
+        <a href="#workspace" class="btn btn-primary btn-lg">
+          <i data-lucide="pen-tool"></i>
+          <span>Mulai Buat Surat</span>
+        </a>
+        <button type="button" class="btn btn-secondary btn-lg" id="btn-hero-sample">
+          <i data-lucide="eye"></i>
+          <span>Coba Contoh Fresh Graduate / Admin</span>
+        </button>
+      </div>
+
+      <!-- 3 Steps Banner -->
+      <div class="steps-banner">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-info">
+            <h4>Isi Formulir</h4>
+            <p>Masukkan data diri, perusahaan tujuan, kualifikasi, dan dokumen pendukung.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-info">
+            <h4>Periksa & Sesuaikan</h4>
+            <p>Lihat live preview A4 secara realtime. Tersedia mode edit manual langsung.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-info">
+            <h4>Unduh Dokumen</h4>
+            <p>Simpan sebagai PDF siap cetak atau file Word (.docx) asli yang dapat diedit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <main class="workspace-wrapper" id="workspace">
+
+    <!-- Mobile Tab Switcher (Visible on Mobile & Tablet) -->
+    <div class="mobile-tabs" id="mobile-tabs">
+      <button type="button" class="mobile-tab-btn active" data-tab="form">
+        <i data-lucide="edit-3"></i>
+        <span>Formulir Surat</span>
+      </button>
+      <button type="button" class="mobile-tab-btn" data-tab="preview">
+        <i data-lucide="file-text"></i>
+        <span>Pratinjau Dokumen A4</span>
+      </button>
+    </div>
+
+    <div class="workspace-grid show-form-only" id="workspace-grid">
+
+      <!-- LEFT COLUMN: Multi-Step Form Builder -->
+      <section class="form-column">
+        <div class="form-panel-card">
+
+          <!-- Stepper Progress Navigation -->
+          <div class="stepper-nav">
+            <button type="button" class="step-indicator active" data-step="1">
+              <span class="step-bullet">1</span>
+              <span class="step-label">Data Diri</span>
+            </button>
+            <button type="button" class="step-indicator" data-step="2">
+              <span class="step-bullet">2</span>
+              <span class="step-label">Perusahaan</span>
+            </button>
+            <button type="button" class="step-indicator" data-step="3">
+              <span class="step-bullet">3</span>
+              <span class="step-label">Pekerjaan</span>
+            </button>
+            <button type="button" class="step-indicator" data-step="4">
+              <span class="step-bullet">4</span>
+              <span class="step-label">Lampiran</span>
+            </button>
+          </div>
+
+          <!-- FORM CONTAINER -->
+          <form id="job-letter-form" autocomplete="off" novalidate>
+
+            <!-- STEP 1: DATA DIRI -->
+            <div class="form-step active" id="step-1">
+              <div class="step-header">
+                <h3>Informasi Pribadi Pelamar</h3>
+                <p>Masukkan identitas lengkap yang akan dicantumkan pada surat lamaran.</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group col-span-2">
+                  <label for="nama" class="form-label">
+                    <span>Nama Lengkap <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="nama" name="nama" class="form-control" placeholder="Contoh: Muhammad Farhan Pratama" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="tempat_lahir" class="form-label">
+                    <span>Tempat Lahir <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="tempat_lahir" name="tempat_lahir" class="form-control" placeholder="Contoh: Jakarta" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="tanggal_lahir" class="form-label">
+                    <span>Tanggal Lahir <span class="label-required">*</span></span>
+                  </label>
+                  <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="form-control" required>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="alamat" class="form-label">
+                    <span>Alamat Domisili Lengkap <span class="label-required">*</span></span>
+                  </label>
+                  <textarea id="alamat" name="alamat" class="form-control" rows="2" placeholder="Contoh: Jl. Melati Indah No. 18, Kebayoran Baru, Jakarta Selatan" required></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="telepon" class="form-label">
+                    <span>Nomor WhatsApp / HP <span class="label-required">*</span></span>
+                  </label>
+                  <input type="tel" id="telepon" name="telepon" class="form-control" placeholder="Contoh: 081289102934" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="email" class="form-label">
+                    <span>Alamat Email Aktif <span class="label-required">*</span></span>
+                  </label>
+                  <input type="email" id="email" name="email" class="form-control" placeholder="Contoh: m.farhan@gmail.com" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="pendidikan" class="form-label">
+                    <span>Pendidikan Terakhir <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="pendidikan" name="pendidikan" list="list-pendidikan" class="form-control" placeholder="Contoh: S1 Manajemen Bisnis" required>
+                  <datalist id="list-pendidikan">
+                    <option value="SMA / SMK Sederajat"></option>
+                    <option value="Diploma Tiga (D3)"></option>
+                    <option value="Sarjana (S1)"></option>
+                    <option value="Magister (S2)"></option>
+                  </datalist>
+                </div>
+
+                <div class="form-group">
+                  <label for="status_pendidikan" class="form-label">
+                    <span>Status Pendidikan <span class="label-required">*</span></span>
+                  </label>
+                  <select id="status_pendidikan" name="status_pendidikan" class="form-control" required>
+                    <option value="Lulus">Lulus</option>
+                    <option value="Fresh Graduate">Fresh Graduate</option>
+                    <option value="Sedang Menempuh Semester Akhir">Sedang Menempuh Semester Akhir</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <div></div>
+                <button type="button" class="btn btn-primary btn-next" data-next="2">
+                  <span>Lanjut: Perusahaan</span>
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2: INFORMASI PERUSAHAAN -->
+            <div class="form-step" id="step-2">
+              <div class="step-header">
+                <h3>Tujuan Perusahaan & Waktu Surat</h3>
+                <p>Data instansi atau perusahaan yang dituju beserta waktu pembuatan surat.</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group col-span-2">
+                  <label for="nama_perusahaan" class="form-label">
+                    <span>Nama Perusahaan / Instansi <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="nama_perusahaan" name="nama_perusahaan" class="form-control" placeholder="Contoh: PT Nusantara Citra Mandiri" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="nama_penerima" class="form-label">
+                    <span>Nama Penerima Surat <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <input type="text" id="nama_penerima" name="nama_penerima" class="form-control" placeholder="Contoh: Bapak Rian Hidayat, S.Psi.">
+                  <span class="form-hint">Kosongkan jika ditujukan umum ke HRD.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="jabatan_penerima" class="form-label">
+                    <span>Jabatan Penerima <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <input type="text" id="jabatan_penerima" name="jabatan_penerima" class="form-control" placeholder="HRD & Recruitment Manager">
+                  <span class="form-hint">Default: Pimpinan HRD / Bagian Personalia</span>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="alamat_perusahaan" class="form-label">
+                    <span>Alamat Lengkap Perusahaan <span class="label-required">*</span></span>
+                  </label>
+                  <textarea id="alamat_perusahaan" name="alamat_perusahaan" class="form-control" rows="2" placeholder="Contoh: Gedung Menara Mulia Lt. 12, Jl. Gatot Subroto No. 42, Jakarta Pusat" required></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="kota_surat" class="form-label">
+                    <span>Kota Pembuatan Surat <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="kota_surat" name="kota_surat" class="form-control" placeholder="Contoh: Jakarta" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="tanggal_surat" class="form-label">
+                    <span>Tanggal Surat <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="tanggal_surat" name="tanggal_surat" class="form-control" placeholder="Contoh: 6 November 2026" required>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="sumber_lowongan" class="form-label">
+                    <span>Sumber Informasi Lowongan <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <input type="text" id="sumber_lowongan" name="sumber_lowongan" class="form-control" placeholder="Contoh: situs resmi karir perusahaan, LinkedIn, atau JobStreet">
+                  <span class="form-hint">Jika diisi, surat akan menyertakan sumber informasi tersebut secara formal.</span>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary btn-prev" data-prev="1">
+                  <i data-lucide="arrow-left"></i>
+                  <span>Kembali</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-next" data-next="3">
+                  <span>Lanjut: Pekerjaan</span>
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 3: INFORMASI PEKERJAAN -->
+            <div class="form-step" id="step-3">
+              <div class="step-header">
+                <h3>Posisi, Pengalaman & Kompetensi</h3>
+                <p>Mendukung semua jenis pekerjaan (All-Job). Sistem tidak membatasi pilihan profesi.</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="posisi" class="form-label">
+                    <span>Posisi yang Dilamar <span class="label-required">*</span></span>
+                  </label>
+                  <input type="text" id="posisi" name="posisi" class="form-control" placeholder="Ketik posisi bebas: Admin, Kasir, IT, Guru, Manajer..." required>
+                  <span class="form-hint">Teks bebas untuk pekerjaan apa pun.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="jenis_pekerjaan" class="form-label">
+                    <span>Jenis Pekerjaan <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <select id="jenis_pekerjaan" name="jenis_pekerjaan" class="form-control">
+                    <option value="">Pilih Jenis Pekerjaan</option>
+                    <option value="Penuh Waktu (Full-time)">Penuh Waktu (Full-time)</option>
+                    <option value="Paruh Waktu (Part-time)">Paruh Waktu (Part-time)</option>
+                    <option value="Kontrak">Kontrak</option>
+                    <option value="Magang / Internship">Magang / Internship</option>
+                    <option value="Freelance">Freelance</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="pengalaman" class="form-label">
+                    <span>Pengalaman Kerja Terkait <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <textarea id="pengalaman" name="pengalaman" class="form-control" rows="2" placeholder="Contoh: bekerja selama 2 tahun sebagai staf administrasi logistik di PT Mitra Sejahtera..."></textarea>
+                  <span class="form-hint">Kosongkan jika fresh graduate atau tanpa pengalaman kerja. Surat akan menyesuaikan narasi secara profesional tanpa mengklaim pengalaman fiktif.</span>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="keahlian" class="form-label">
+                    <span>Keahlian & Keterampilan <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <textarea id="keahlian" name="keahlian" class="form-control" rows="2" placeholder="Contoh: Microsoft Excel, komunikasi interpersonal, negosiasi, analisis data..."></textarea>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="motivasi" class="form-label">
+                    <span>Motivasi / Alasan Melamar <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <textarea id="motivasi" name="motivasi" class="form-control" rows="2" placeholder="Contoh: Saya berkeinginan kuat mendedikasikan kemampuan saya untuk mendukung target operasional perusahaan..."></textarea>
+                </div>
+
+                <div class="form-group col-span-2">
+                  <label for="deskripsi_diri" class="form-label">
+                    <span>Deskripsi Singkat Diri <span class="label-optional">(Opsional)</span></span>
+                  </label>
+                  <input type="text" id="deskripsi_diri" name="deskripsi_diri" class="form-control" placeholder="Contoh: Saya adalah pribadi yang teliti, disiplin, dan mampu bekerja secara mandiri maupun tim.">
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary btn-prev" data-prev="2">
+                  <i data-lucide="arrow-left"></i>
+                  <span>Kembali</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-next" data-next="4">
+                  <span>Lanjut: Dokumen Lampiran</span>
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 4: DOKUMEN LAMPIRAN -->
+            <div class="form-step" id="step-4">
+              <div class="step-header">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3>Dokumen Lampiran Pendukung</h3>
+                    <p>Centang berkas yang disertakan. Urutan dan nama berkas dapat disesuaikan.</p>
+                  </div>
+                  <span class="attachment-counter-pill" id="attachment-counter">
+                    <i data-lucide="paperclip"></i>
+                    <span id="counter-text">5 Berkas Aktif</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Attachments Manager Component -->
+              <div class="attachments-manager">
+                <div class="attachment-list" id="attachment-list-container">
+                  <!-- Rendered dynamically by JavaScript -->
+                </div>
+
+                <div class="add-attachment-box">
+                  <input type="text" id="input-new-attachment" class="form-control" placeholder="Ketik nama berkas baru (misal: Portofolio Desain, SKCK)...">
+                  <button type="button" class="btn btn-secondary" id="btn-add-attachment">
+                    <i data-lucide="plus"></i>
+                    <span>Tambah</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary btn-prev" data-prev="3">
+                  <i data-lucide="arrow-left"></i>
+                  <span>Kembali</span>
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-finish-and-preview">
+                  <i data-lucide="check-circle-2"></i>
+                  <span>Selesai & Tinjau Dokumen</span>
+                </button>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: Sticky Live A4 Preview -->
+      <section class="preview-column">
+
+        <!-- Toolbar Preview -->
+        <div class="preview-toolbar">
+          <div class="toolbar-left">
+            <span class="preview-status-pill" id="preview-sync-status">
+              <span class="status-dot"></span>
+              <span id="sync-status-text">Sinkronisasi Otomatis</span>
+            </span>
+          </div>
+
+          <div class="toolbar-right">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-manual-edit" title="Edit teks langsung di dokumen">
+              <i data-lucide="edit-2"></i>
+              <span id="edit-btn-text">Edit Manual</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-text" title="Salin seluruh teks surat ke clipboard">
+              <i data-lucide="copy"></i>
+              <span>Salin Teks</span>
+            </button>
+            <button type="button" class="btn btn-docx btn-sm" id="btn-export-docx" title="Unduh file Microsoft Word (.docx) asli">
+              <i data-lucide="file-code"></i>
+              <span>Word (.docx)</span>
+            </button>
+            <button type="button" class="btn btn-pdf btn-sm" id="btn-export-pdf" title="Cetak atau simpan sebagai file PDF A4">
+              <i data-lucide="printer"></i>
+              <span>Cetak / PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert saat mode Edit Manual Aktif -->
+        <div class="manual-edit-alert" id="manual-edit-alert">
+          <div>
+            <strong>Mode Edit Manual Aktif:</strong> Anda dapat mengubah kalimat langsung pada lembar surat di bawah.
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-sm btn-secondary" id="btn-reset-manual-edit" style="color: var(--danger-rose);">
+              Reset ke Form
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" id="btn-save-manual-edit">
+              Selesai Edit
+            </button>
+          </div>
+        </div>
+
+        <!-- Virtual A4 Sheet Container -->
+        <div class="preview-sheet-outer" id="preview-sheet-outer">
+          <div id="live-letter-mount">
+            <!-- Rendered by letterEngine.js -->
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODAL: Pilih Contoh Data -->
+  <div class="modal-overlay" id="modal-sample">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Pilih Contoh Profil Lamaran</h3>
+        <button type="button" class="tool-btn modal-close" data-modal="modal-sample">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 1rem;">
+          Pilih profil siap pakai untuk menguji pengisian otomatis dan memeriksa format surat:
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary sample-select-btn" data-preset="admin" style="justify-content: flex-start; text-align: left; padding: 0.85rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--primary-navy);">Staf Administrasi & Operasional</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Pelamar berpengalaman kerja 2 tahun, S1 Manajemen.</div>
+            </div>
+          </button>
+          <button type="button" class="btn btn-secondary sample-select-btn" data-preset="fresh_graduate" style="justify-content: flex-start; text-align: left; padding: 0.85rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--primary-navy);">Fresh Graduate (Lulusan Baru)</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Tanpa pengalaman kerja, narasi fokus pada keahlian dan antusiasme.</div>
+            </div>
+          </button>
+          <button type="button" class="btn btn-secondary sample-select-btn" data-preset="retail_kasir" style="justify-content: flex-start; text-align: left; padding: 0.85rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--primary-navy);">Staf Kasir & Retail Service</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Lulusan SMK, pengalaman pelayanan kasir POS dan ketelitian transaksi.</div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close" data-modal="modal-sample">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Konfirmasi Reset Form -->
+  <div class="modal-overlay" id="modal-reset">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="color: var(--danger-rose);">Reset Seluruh Formulir?</h3>
+        <button type="button" class="tool-btn modal-close" data-modal="modal-reset">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Tindakan ini akan menghapus seluruh data yang sudah Anda isi pada formulir dan mengembalikan dokumen ke keadaan awal.
+        </p>
+        <p style="margin-top: 0.5rem; font-weight: 600; color: var(--text-primary);">
+          Apakah Anda yakin ingin melanjutkan?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close" data-modal="modal-reset">Batal</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-reset" style="background-color: var(--danger-rose);">
+          Ya, Reset Formulir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Vendor Libraries (Offline Ready) -->
+  <script src="vendor/docx.umd.js"></script>
+  <script src="vendor/lucide.min.js"></script>
+
+  <!-- Application Controller (Universal: Berfungsi via file:// dan http://) -->
+  <script src="js/app.bundle.js"></script>
+</body>
+</html>
