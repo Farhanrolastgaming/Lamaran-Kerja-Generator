@@ -4,6 +4,7 @@
   "description": "Website Generator Surat Lamaran Kerja Profesional (All Job)",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Static site ready for deployment'",
     "start": "node server.js"
   },
   "keywords": [
