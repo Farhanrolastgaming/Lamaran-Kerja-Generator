@@ -133,6 +133,10 @@
               <span class="step-bullet">4</span>
               <span class="step-label">Lampiran</span>
             </button>
+            <button type="button" class="step-indicator" data-step="5">
+              <span class="step-bullet">5</span>
+              <span class="step-label">Tanda Tangan</span>
+            </button>
           </div>
 
           <!-- FORM CONTAINER -->
@@ -401,6 +405,58 @@
                 <button type="button" class="btn btn-secondary btn-prev" data-prev="3">
                   <i data-lucide="arrow-left"></i>
                   <span>Kembali</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-next" data-next="5">
+                  <span>Lanjut: Tanda Tangan</span>
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 5: TANDA TANGAN (OPSIONAL) -->
+            <div class="form-step" id="step-5">
+              <div class="step-header">
+                <h3>Tanda Tangan Digital <span class="label-optional">(Opsional)</span></h3>
+                <p>Unggah gambar tanda tangan Anda dalam format PNG (disarankan berlatar transparan).</p>
+              </div>
+
+              <div class="signature-upload-container">
+                <div class="signature-upload-box" id="signature-dropzone">
+                  <i data-lucide="upload-cloud" class="signature-icon"></i>
+                  <div class="upload-title">Pilih atau Seret File Gambar Tanda Tangan</div>
+                  <p class="upload-hint">Format wajib: <strong>PNG (.png)</strong> • Ukuran maksimal: 2 MB</p>
+                  <input type="file" id="input-signature" accept="image/png" style="display: none;">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-browse-signature">
+                    <i data-lucide="image"></i>
+                    <span>Pilih File PNG</span>
+                  </button>
+                </div>
+
+                <!-- Signature Preview Box -->
+                <div class="signature-preview-card" id="signature-preview-card" style="display: none;">
+                  <div class="preview-img-wrap">
+                    <img id="signature-preview-img" src="" alt="Pratinjau Tanda Tangan">
+                  </div>
+                  <div class="preview-info">
+                    <span class="file-name" id="signature-file-name">tanda-tangan.png</span>
+                    <span class="file-badge">Format PNG Terpasang</span>
+                  </div>
+                  <button type="button" class="btn btn-danger-ghost btn-sm" id="btn-remove-signature" title="Hapus tanda tangan">
+                    <i data-lucide="trash-2"></i>
+                    <span>Hapus</span>
+                  </button>
+                </div>
+
+                <div class="form-hint" style="margin-top: 1rem; line-height: 1.5;">
+                  <i data-lucide="info" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
+                  <strong>Catatan:</strong> Bagian ini bersifat opsional. Jika Anda tidak mengunggah tanda tangan, surat akan tetap menyediakan ruang kosong formal untuk tanda tangan basah secara manual.
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary btn-prev" data-prev="4">
+                  <i data-lucide="arrow-left"></i>
+                  <span>Kembali: Lampiran</span>
                 </button>
                 <button type="button" class="btn btn-primary" id="btn-finish-and-preview">
                   <i data-lucide="check-circle-2"></i>

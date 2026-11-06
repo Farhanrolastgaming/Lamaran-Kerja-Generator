@@ -74,7 +74,7 @@ export const DocxExporter = {
 
     const {
       Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-      AlignmentType, BorderStyle, WidthType
+      AlignmentType, BorderStyle, WidthType, ImageRun
     } = window.docx;
 
     const data = LetterEngine.composeLetterData(rawFormData);
@@ -302,7 +302,39 @@ export const DocxExporter = {
     }));
 
     // 12. Tanda Tangan & Nama Terang (cantSplit untuk mencegah halaman terpotong)
-    // Buat tabel tanda tangan di sebelah kanan atau paragraf rata kanan
+    const signatureCellChildren = [
+      new Paragraph({
+        spacing: { line: 260, after: data.raw.signature_image ? 80 : 600 },
+        children: [new TextRun({ text: data.salamPenutup, font: 'Times New Roman', size: 24 })]
+      })
+    ];
+
+    if (data.raw.signature_image && ImageRun) {
+      try {
+        const base64 = data.raw.signature_image.split(',')[1];
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const imgRun = new ImageRun({
+          data: bytes,
+          transformation: { width: 130, height: 48 }
+        });
+        signatureCellChildren.push(new Paragraph({
+          spacing: { line: 260, after: 80 },
+          children: [imgRun]
+        }));
+      } catch (imgErr) {
+        console.warn('Gagal memuat gambar tanda tangan di Word:', imgErr);
+      }
+    }
+
+    signatureCellChildren.push(new Paragraph({
+      spacing: { line: 260, after: 0 },
+      children: [new TextRun({ text: data.namaPelamar, bold: true, underline: {}, font: 'Times New Roman', size: 24 })]
+    }));
+
     const signatureTable = new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       borders: borderNone,
@@ -318,16 +350,7 @@ export const DocxExporter = {
             new TableCell({
               width: { size: 45, type: WidthType.PERCENTAGE },
               borders: cellBorderNone,
-              children: [
-                new Paragraph({
-                  spacing: { line: 260, after: 600 }, // Ruang tanda tangan ~4 baris
-                  children: [new TextRun({ text: data.salamPenutup, font: 'Times New Roman', size: 24 })]
-                }),
-                new Paragraph({
-                  spacing: { line: 260, after: 0 },
-                  children: [new TextRun({ text: data.namaPelamar, bold: true, underline: {}, font: 'Times New Roman', size: 24 })]
-                })
-              ]
+              children: signatureCellChildren
             })
           ]
         })

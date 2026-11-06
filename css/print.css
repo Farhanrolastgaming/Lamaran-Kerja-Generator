@@ -209,10 +209,27 @@
   }
 
   .signature-closing {
-    margin-bottom: 40pt !important; /* Ruang tanda tangan basah formal */
+    margin-bottom: 4pt !important;
+  }
+
+  .signature-space {
+    height: 38pt !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .signature-img-rendered {
+    max-height: 38pt !important;
+    max-width: 130pt !important;
+    object-fit: contain !important;
+    display: block !important;
   }
 
   .signature-name {
+    margin-top: 4pt !important;
+    font-weight: bold !important;
+    text-decoration: underline !important;
+  }
     font-weight: bold !important;
     text-decoration: underline !important;
   }

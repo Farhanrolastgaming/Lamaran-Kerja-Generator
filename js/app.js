@@ -11,8 +11,10 @@ import { DocxExporter } from './docxExport.js';
 class SuratLamaranApp {
   constructor() {
     this.currentStep = 1;
-    this.totalSteps = 4;
+    this.totalSteps = 5;
     this.attachments = JSON.parse(JSON.stringify(DEFAULT_ATTACHMENTS_LIST));
+    this.signatureImage = null;
+    this.signatureFileNameText = null;
     this.isManualEdit = false;
     this.debounceTimer = null;
 
@@ -40,6 +42,15 @@ class SuratLamaranApp {
     this.stepPanels = document.querySelectorAll('.form-step');
     this.workspaceGrid = document.getElementById('workspace-grid');
     this.mobileTabButtons = document.querySelectorAll('.mobile-tab-btn');
+
+    // Step 5: Tanda Tangan
+    this.signatureDropzone = document.getElementById('signature-dropzone');
+    this.inputSignature = document.getElementById('input-signature');
+    this.btnBrowseSignature = document.getElementById('btn-browse-signature');
+    this.signaturePreviewCard = document.getElementById('signature-preview-card');
+    this.signaturePreviewImg = document.getElementById('signature-preview-img');
+    this.signatureFileName = document.getElementById('signature-file-name');
+    this.btnRemoveSignature = document.getElementById('btn-remove-signature');
 
     // Action buttons & Toolbar
     this.btnExportPdf = document.getElementById('btn-export-pdf');
@@ -90,6 +101,10 @@ class SuratLamaranApp {
       this.populateForm(saved);
       if (Array.isArray(saved.attachments) && saved.attachments.length > 0) {
         this.attachments = saved.attachments;
+      }
+      if (saved.signature_image) {
+        this.signatureImage = saved.signature_image;
+        this.updateSignatureUI('tanda-tangan.png');
       }
       this.showToast('Draft tersimpan berhasil dimuat', 'info');
     }
@@ -156,6 +171,52 @@ class SuratLamaranApp {
           e.preventDefault();
           this.addNewAttachment();
         }
+      });
+    }
+
+    // Upload Tanda Tangan PNG
+    if (this.btnBrowseSignature && this.inputSignature) {
+      this.btnBrowseSignature.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.inputSignature.click();
+      });
+    }
+
+    if (this.signatureDropzone && this.inputSignature) {
+      this.signatureDropzone.addEventListener('click', () => {
+        this.inputSignature.click();
+      });
+
+      this.signatureDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        this.signatureDropzone.classList.add('dragover');
+      });
+
+      this.signatureDropzone.addEventListener('dragleave', () => {
+        this.signatureDropzone.classList.remove('dragover');
+      });
+
+      this.signatureDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        this.signatureDropzone.classList.remove('dragover');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          this.handleSignatureFile(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    if (this.inputSignature) {
+      this.inputSignature.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          this.handleSignatureFile(e.target.files[0]);
+        }
+      });
+    }
+
+    if (this.btnRemoveSignature) {
+      this.btnRemoveSignature.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.removeSignature();
       });
     }
 
@@ -307,6 +368,7 @@ class SuratLamaranApp {
       data[key] = value;
     }
     data.attachments = this.attachments;
+    data.signature_image = this.signatureImage;
     return data;
   }
 
@@ -468,6 +530,59 @@ class SuratLamaranApp {
     const activeCount = this.attachments.filter(a => a.checked && a.name.trim()).length;
     if (this.counterText) {
       this.counterText.innerText = `${activeCount} Berkas Aktif`;
+    }
+  }
+
+  /**
+   * Penanganan file tanda tangan PNG (Opsional)
+   */
+  handleSignatureFile(file) {
+    if (!file) return;
+
+    const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+    if (!isPng) {
+      this.showToast('Gagal: Tanda tangan wajib berupa file gambar PNG (.png)', 'warning');
+      if (this.inputSignature) this.inputSignature.value = '';
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      this.showToast('Gagal: Ukuran file gambar PNG maksimal 2 MB', 'warning');
+      if (this.inputSignature) this.inputSignature.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.signatureImage = e.target.result;
+      this.signatureFileNameText = file.name;
+      this.updateSignatureUI(file.name);
+      this.updatePreview();
+      Storage.saveDraft(this.getFormData());
+      this.showToast('Tanda tangan PNG berhasil ditambahkan!', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeSignature() {
+    this.signatureImage = null;
+    this.signatureFileNameText = null;
+    if (this.inputSignature) this.inputSignature.value = '';
+    this.updateSignatureUI(null);
+    this.updatePreview();
+    Storage.saveDraft(this.getFormData());
+    this.showToast('Tanda tangan digital dihapus', 'info');
+  }
+
+  updateSignatureUI(name) {
+    if (this.signatureImage) {
+      if (this.signaturePreviewImg) this.signaturePreviewImg.src = this.signatureImage;
+      if (this.signatureFileName) this.signatureFileName.innerText = name || 'tanda-tangan.png';
+      if (this.signaturePreviewCard) this.signaturePreviewCard.style.display = 'flex';
+      if (this.signatureDropzone) this.signatureDropzone.style.display = 'none';
+    } else {
+      if (this.signaturePreviewCard) this.signaturePreviewCard.style.display = 'none';
+      if (this.signatureDropzone) this.signatureDropzone.style.display = 'flex';
     }
   }
 
@@ -664,6 +779,9 @@ class SuratLamaranApp {
     Storage.clearAll();
     this.form.reset();
     this.attachments = JSON.parse(JSON.stringify(DEFAULT_ATTACHMENTS_LIST));
+    this.signatureImage = null;
+    if (this.inputSignature) this.inputSignature.value = '';
+    this.updateSignatureUI(null);
     this.isManualEdit = false;
     this.updateManualEditUI();
     this.initDateDefaults();

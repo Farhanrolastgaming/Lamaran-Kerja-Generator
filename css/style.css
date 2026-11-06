@@ -903,12 +903,117 @@ textarea.form-control {
 }
 
 .signature-space {
-  height: 52px; /* Tanda tangan basah */
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.signature-img-rendered {
+  max-height: 50px;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
 }
 
 .signature-name {
   font-weight: bold;
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   Step 5: Signature Upload
+   ========================================================================== */
+.signature-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signature-upload-box {
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  background-color: var(--bg-main);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.signature-upload-box:hover,
+.signature-upload-box.dragover {
+  border-color: var(--accent-blue);
+  background-color: var(--accent-blue-soft);
+}
+
+.signature-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--accent-blue);
+  margin-bottom: 0.25rem;
+}
+
+.upload-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+}
+
+.upload-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.signature-preview-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid var(--accent-blue-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.preview-img-wrap {
+  width: 90px;
+  height: 50px;
+  background: repeating-conic-gradient(#f1f5f9 0% 25%, #ffffff 0% 50%) 50% / 12px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.preview-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.preview-info {
+  flex: 1;
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+}
+
+.file-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--success-emerald);
 }
 
 /* ==========================================================================

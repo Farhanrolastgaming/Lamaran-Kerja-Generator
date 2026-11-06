@@ -87,7 +87,8 @@ export const LetterEngine = {
       keahlian: (data.keahlian || '').trim(),
       deskripsi_diri: (data.deskripsi_diri || '').trim(),
 
-      attachments: Array.isArray(data.attachments) ? data.attachments : []
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      signature_image: data.signature_image || null
     };
   },
 
@@ -347,7 +348,7 @@ export const LetterEngine = {
     <div class="letter-signature-block">
       <div class="signature-closing">${this.escapeHtml(data.salamPenutup)}</div>
       <div class="signature-space">
-        <!-- Ruang untuk tanda tangan basah -->
+        ${data.raw.signature_image ? `<img src="${data.raw.signature_image}" alt="Tanda Tangan" class="signature-img-rendered">` : ''}
       </div>
       <div class="signature-name font-bold">${this.escapeHtml(data.namaPelamar)}</div>
     </div>

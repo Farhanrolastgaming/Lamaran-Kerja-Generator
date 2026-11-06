@@ -279,7 +279,8 @@
         keahlian: (data.keahlian || '').trim(),
         deskripsi_diri: (data.deskripsi_diri || '').trim(),
 
-        attachments: Array.isArray(data.attachments) ? data.attachments : []
+        attachments: Array.isArray(data.attachments) ? data.attachments : [],
+        signature_image: data.signature_image || null
       };
     },
 
@@ -490,7 +491,9 @@
   <div class="letter-signature-wrapper">
     <div class="letter-signature-block">
       <div class="signature-closing">${this.escapeHtml(data.salamPenutup)}</div>
-      <div class="signature-space"></div>
+      <div class="signature-space">
+        ${data.raw.signature_image ? `<img src="${data.raw.signature_image}" alt="Tanda Tangan" class="signature-img-rendered">` : ''}
+      </div>
       <div class="signature-name font-bold">${this.escapeHtml(data.namaPelamar)}</div>
     </div>
   </div>
@@ -529,7 +532,7 @@
 
       const {
         Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-        AlignmentType, BorderStyle, WidthType
+        AlignmentType, BorderStyle, WidthType, ImageRun
       } = window.docx;
 
       const data = LetterEngine.composeLetterData(rawFormData);
@@ -749,6 +752,39 @@
       }));
 
       // 12. Tanda Tangan
+      const signatureCellChildren = [
+        new Paragraph({
+          spacing: { line: 260, after: data.raw.signature_image ? 80 : 600 },
+          children: [new TextRun({ text: data.salamPenutup, font: 'Times New Roman', size: 24 })]
+        })
+      ];
+
+      if (data.raw.signature_image && ImageRun) {
+        try {
+          const base64 = data.raw.signature_image.split(',')[1];
+          const binaryString = atob(base64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const imgRun = new ImageRun({
+            data: bytes,
+            transformation: { width: 130, height: 48 }
+          });
+          signatureCellChildren.push(new Paragraph({
+            spacing: { line: 260, after: 80 },
+            children: [imgRun]
+          }));
+        } catch (imgErr) {
+          console.warn('Gagal memuat gambar tanda tangan di Word:', imgErr);
+        }
+      }
+
+      signatureCellChildren.push(new Paragraph({
+        spacing: { line: 260, after: 0 },
+        children: [new TextRun({ text: data.namaPelamar, bold: true, underline: {}, font: 'Times New Roman', size: 24 })]
+      }));
+
       const signatureTable = new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
         borders: borderNone,
@@ -764,16 +800,7 @@
               new TableCell({
                 width: { size: 45, type: WidthType.PERCENTAGE },
                 borders: cellBorderNone,
-                children: [
-                  new Paragraph({
-                    spacing: { line: 260, after: 600 },
-                    children: [new TextRun({ text: data.salamPenutup, font: 'Times New Roman', size: 24 })]
-                  }),
-                  new Paragraph({
-                    spacing: { line: 260, after: 0 },
-                    children: [new TextRun({ text: data.namaPelamar, bold: true, underline: {}, font: 'Times New Roman', size: 24 })]
-                  })
-                ]
+                children: signatureCellChildren
               })
             ]
           })
@@ -806,8 +833,10 @@
   class SuratLamaranApp {
     constructor() {
       this.currentStep = 1;
-      this.totalSteps = 4;
+      this.totalSteps = 5;
       this.attachments = JSON.parse(JSON.stringify(DEFAULT_ATTACHMENTS_LIST));
+      this.signatureImage = null;
+      this.signatureFileNameText = null;
       this.isManualEdit = false;
       this.debounceTimer = null;
 
@@ -831,6 +860,15 @@
       this.stepPanels = document.querySelectorAll('.form-step');
       this.workspaceGrid = document.getElementById('workspace-grid');
       this.mobileTabButtons = document.querySelectorAll('.mobile-tab-btn');
+
+      // Step 5: Tanda Tangan
+      this.signatureDropzone = document.getElementById('signature-dropzone');
+      this.inputSignature = document.getElementById('input-signature');
+      this.btnBrowseSignature = document.getElementById('btn-browse-signature');
+      this.signaturePreviewCard = document.getElementById('signature-preview-card');
+      this.signaturePreviewImg = document.getElementById('signature-preview-img');
+      this.signatureFileName = document.getElementById('signature-file-name');
+      this.btnRemoveSignature = document.getElementById('btn-remove-signature');
 
       this.btnExportPdf = document.getElementById('btn-export-pdf');
       this.btnExportDocx = document.getElementById('btn-export-docx');
@@ -873,6 +911,10 @@
         this.populateForm(saved);
         if (Array.isArray(saved.attachments) && saved.attachments.length > 0) {
           this.attachments = saved.attachments;
+        }
+        if (saved.signature_image) {
+          this.signatureImage = saved.signature_image;
+          this.updateSignatureUI('tanda-tangan.png');
         }
       }
 
@@ -939,6 +981,52 @@
             e.preventDefault();
             this.addNewAttachment();
           }
+        });
+      }
+
+      // Upload Tanda Tangan PNG
+      if (this.btnBrowseSignature && this.inputSignature) {
+        this.btnBrowseSignature.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.inputSignature.click();
+        });
+      }
+
+      if (this.signatureDropzone && this.inputSignature) {
+        this.signatureDropzone.addEventListener('click', () => {
+          this.inputSignature.click();
+        });
+
+        this.signatureDropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          this.signatureDropzone.classList.add('dragover');
+        });
+
+        this.signatureDropzone.addEventListener('dragleave', () => {
+          this.signatureDropzone.classList.remove('dragover');
+        });
+
+        this.signatureDropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          this.signatureDropzone.classList.remove('dragover');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+            this.handleSignatureFile(e.dataTransfer.files[0]);
+          }
+        });
+      }
+
+      if (this.inputSignature) {
+        this.inputSignature.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) {
+            this.handleSignatureFile(e.target.files[0]);
+          }
+        });
+      }
+
+      if (this.btnRemoveSignature) {
+        this.btnRemoveSignature.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.removeSignature();
         });
       }
 
@@ -1087,6 +1175,7 @@
         data[key] = value;
       }
       data.attachments = this.attachments;
+      data.signature_image = this.signatureImage;
       return data;
     }
 
@@ -1224,6 +1313,59 @@
       const activeCount = this.attachments.filter(a => a.checked && a.name.trim()).length;
       if (this.counterText) {
         this.counterText.innerText = `${activeCount} Berkas Aktif`;
+      }
+    }
+
+    /**
+     * Penanganan file tanda tangan PNG (Opsional)
+     */
+    handleSignatureFile(file) {
+      if (!file) return;
+
+      const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+      if (!isPng) {
+        this.showToast('Gagal: Tanda tangan wajib berupa file gambar PNG (.png)', 'warning');
+        if (this.inputSignature) this.inputSignature.value = '';
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        this.showToast('Gagal: Ukuran file gambar PNG maksimal 2 MB', 'warning');
+        if (this.inputSignature) this.inputSignature.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.signatureImage = e.target.result;
+        this.signatureFileNameText = file.name;
+        this.updateSignatureUI(file.name);
+        this.updatePreview();
+        Storage.saveDraft(this.getFormData());
+        this.showToast('Tanda tangan PNG berhasil ditambahkan!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    removeSignature() {
+      this.signatureImage = null;
+      this.signatureFileNameText = null;
+      if (this.inputSignature) this.inputSignature.value = '';
+      this.updateSignatureUI(null);
+      this.updatePreview();
+      Storage.saveDraft(this.getFormData());
+      this.showToast('Tanda tangan digital dihapus', 'info');
+    }
+
+    updateSignatureUI(name) {
+      if (this.signatureImage) {
+        if (this.signaturePreviewImg) this.signaturePreviewImg.src = this.signatureImage;
+        if (this.signatureFileName) this.signatureFileName.innerText = name || 'tanda-tangan.png';
+        if (this.signaturePreviewCard) this.signaturePreviewCard.style.display = 'flex';
+        if (this.signatureDropzone) this.signatureDropzone.style.display = 'none';
+      } else {
+        if (this.signaturePreviewCard) this.signaturePreviewCard.style.display = 'none';
+        if (this.signatureDropzone) this.signatureDropzone.style.display = 'flex';
       }
     }
 
@@ -1413,6 +1555,9 @@
       }
 
       this.attachments = JSON.parse(JSON.stringify(DEFAULT_ATTACHMENTS_LIST));
+      this.signatureImage = null;
+      if (this.inputSignature) this.inputSignature.value = '';
+      this.updateSignatureUI(null);
       this.isManualEdit = false;
       this.updateManualEditUI();
       this.initDateDefaults();
